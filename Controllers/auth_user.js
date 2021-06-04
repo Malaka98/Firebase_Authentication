@@ -17,7 +17,7 @@ exports.singUp = async (req, res) => {
       // ...
     })
     .catch((error) => {
-      let errorCode = error.code;
+      // let errorCode = error.code;
       let errorMessage = error.message;
       console.log(errorMessage);
     });
@@ -26,12 +26,13 @@ exports.singUp = async (req, res) => {
 /*----------------------------//Login user//-------------------------------*/
 
 exports.singIn = async (req, res) => {
+  // console.log("----------------------------------------");
   const email = req.body["email"];
-  const password = req.body["password"];
+  const pass = req.body["pass"];
 
   await firebase
     .auth()
-    .signInWithEmailAndPassword(email, password)
+    .signInWithEmailAndPassword(email, pass)
     .then((userCredential) => {
       // Signed in
       var user = userCredential.user;
@@ -41,13 +42,18 @@ exports.singIn = async (req, res) => {
 
         res
           .cookie("accessToken", token, { httpOnly: true, sameSite: true })
-          .send("authorized_user");
+          .json({
+            authorized_user: true
+          });
       });
     })
     .catch((error) => {
       var errorCode = error.code;
       var errorMessage = error.message;
-      res.json(errorMessage);
+      res.json({
+        authorized_user: false,
+        error: errorMessage
+      });
     });
 };
 
@@ -56,20 +62,23 @@ exports.singIn = async (req, res) => {
 /*----------------------------//Authenticate checker//-------------------------------*/
 
 exports.check = async (req, res) => {
-  // const user = req.cookies.accessToken;
-  console.log(req.user);
-
   await firebase.auth().onAuthStateChanged((user) => {
     if (user) {
       // User is signed in, see docs for a list of available properties
       // https://firebase.google.com/docs/reference/js/firebase.User
       var uid = user.uid;
-      res.json(uid);
+      res.json({
+        loading: false,
+        auth: true,
+      });
       // ...
     } else {
       // User is signed out
       // ...
-      res.send("Sing out");
+      res.json({
+        loading: false,
+        auth: false,
+      });
     }
   });
 };

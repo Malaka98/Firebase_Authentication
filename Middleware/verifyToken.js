@@ -13,6 +13,9 @@ exports.authToken = (req, res, next) => {
       }
     });
   } else {
-    res.send("Unauthorized Request");
+    res.json({
+      loading: false,
+      auth: false,
+    });
   }
 };
