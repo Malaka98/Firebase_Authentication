@@ -41,7 +41,7 @@ exports.singIn = async (req, res) => {
         if (err) throw err;
 
         res
-          .cookie("accessToken", token, { httpOnly: true, sameSite: true })
+          .cookie("accessToken", token, { httpOnly: true })
           .json({
             authorized_user: true
           });
