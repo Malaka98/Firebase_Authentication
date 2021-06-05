@@ -6,7 +6,7 @@ const cors = require('cors')
 const app = express();
 
 const corsOptions = {
-  origin: "https://react-route-guard-with-redux-hwq75kxda.vercel.app/",
+  origin: "http://localhost:3000",
   credentials: true, //access-control-allow-credentials:true
   optionSuccessStatus: 200,
 };

@@ -26,7 +26,6 @@ exports.singUp = async (req, res) => {
 /*----------------------------//Login user//-------------------------------*/
 
 exports.singIn = async (req, res) => {
-  // console.log("----------------------------------------");
   const email = req.body["email"];
   const pass = req.body["pass"];
 
@@ -41,9 +40,9 @@ exports.singIn = async (req, res) => {
         if (err) throw err;
 
         res
-          .cookie("accessToken", token, { httpOnly: true })
+          .cookie("accessToken", token, { httpOnly: true, sameSite: true })
           .json({
-            authorized_user: true
+            authorized_user: true,
           });
       });
     })
@@ -52,7 +51,7 @@ exports.singIn = async (req, res) => {
       var errorMessage = error.message;
       res.json({
         authorized_user: false,
-        error: errorMessage
+        error: errorMessage,
       });
     });
 };
@@ -62,6 +61,7 @@ exports.singIn = async (req, res) => {
 /*----------------------------//Authenticate checker//-------------------------------*/
 
 exports.check = async (req, res) => {
+
   await firebase.auth().onAuthStateChanged((user) => {
     if (user) {
       // User is signed in, see docs for a list of available properties
@@ -89,6 +89,6 @@ exports.logOut = async (req, res) => {
   await firebase.auth().signOut();
 
   res.clearCookie("accessToken", { sameSite: true }).json({
-    logout: "Successfully logged out",
+    authorized_user: true,
   });
 };
